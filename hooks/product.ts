@@ -51,7 +51,7 @@ export const useGetProductReviews = (
 ) => {
   return useDataQuery<undefined, ReviewListResponse>(
     ['productReviews', productId],
-    `/products/productId}/reviews`,
+    `/products/${productId}/reviews`,
     undefined,
     options,
     params,

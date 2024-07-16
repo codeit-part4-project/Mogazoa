@@ -1,13 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ReviewResponse } from '@/types/data';
 import { FaStar } from 'react-icons/fa';
 
-interface User {
-  image: string;
-  nickname: string;
-}
-
 interface ReviewProfileProps {
-  user: User;
+  user: ReviewResponse['user'];
   rating: number;
 }
 
