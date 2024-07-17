@@ -1,39 +1,64 @@
 'use client';
-
+import { Button } from '@/components/ui/button';
+import { useLikeReview, useUnlikeReview } from '@/hooks/review';
 import { useState } from 'react';
 import { RiThumbUpFill, RiThumbUpLine } from 'react-icons/ri';
 
 interface ThumbsProps {
+  reviewId: number;
   isLiked: boolean;
   likeCount: number;
 }
 
-const Thumbs = (props: ThumbsProps) => {
-  const { isLiked = false, likeCount = 0 } = props;
-  const [liked, setLiked] = useState(isLiked);
-  const [likes, setLikes] = useState(likeCount);
+const Thumbs = ({ reviewId, isLiked, likeCount }: ThumbsProps) => {
+  const [isNowLiked, setNowIsLiked] = useState<boolean>(isLiked);
+  const [nowLikedCount, setNowLikedCount] = useState<number>(likeCount);
+
+  const likeReview = useLikeReview(reviewId, {
+    onSuccess: () => {
+      setNowIsLiked(true);
+      setNowLikedCount((prev) => prev + 1);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+  const unlikeReview = useUnlikeReview(reviewId, {
+    onSuccess: () => {
+      setNowIsLiked(false);
+      setNowLikedCount((prev) => prev - 1);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   const handleClick = () => {
-    setLiked(!liked);
-    setLikes(liked ? likes - 1 : likes + 1);
+    if (isNowLiked) {
+      unlikeReview.mutate();
+    } else {
+      likeReview.mutate();
+    }
   };
 
   return (
-    <button
+    <Button
+      variant="outline"
+      size="auto"
       onClick={handleClick}
-      className="flex items-center px-[10px] lg:px-3 py-[6px] w-fit bg-black-450 border-gray-650 border rounded-full"
+      className="flex items-center px-[10px] rounded-full gap-[2px] py-[2px] md:py-0"
     >
-      {liked ? (
-        <RiThumbUpFill className="text-blue mr-[5px] " />
+      {isNowLiked ? (
+        <RiThumbUpFill className="text-blue mr-[5px] text-[13px] md:text-[15px]" />
       ) : (
-        <RiThumbUpLine className="text-gray-500 mr-[5px]" />
+        <RiThumbUpLine className="text-gray-500 mr-[5px] text-sm md:text-base" />
       )}
-      {liked ? (
-        <span className="text-indigo text-sm lg:text-lg font-mono">{likes}</span>
+      {isNowLiked ? (
+        <span className="text-indigo text-sm lg:text-lg font-mono">{nowLikedCount}</span>
       ) : (
-        <span className="text-gray-500 text-sm lg:text-lg font-mono">{likes}</span>
+        <span className="text-gray-500 text-sm lg:text-lg font-mono">{nowLikedCount}</span>
       )}
-    </button>
+    </Button>
   );
 };
 

@@ -1,7 +1,8 @@
+import { Button } from '@/components/ui/button';
+import { ReviewResponse } from '@/types/data';
 import Image from 'next/image';
 import { ReviewProfile } from './review-profile';
 import Thumbs from './Thumbs';
-import { ReviewResponse } from '@/types/data';
 
 interface ReviewProps extends ReviewResponse {
   currentUserId: number | undefined;
@@ -9,6 +10,7 @@ interface ReviewProps extends ReviewResponse {
 }
 
 export default function Review({
+  id,
   reviewImages,
   createdAt,
   content,
@@ -23,15 +25,15 @@ export default function Review({
   const isMyReview = userId === currentUserId;
   const date = new Date(createdAt);
   const formattedDate = date.toISOString().slice(0, 10);
+
   return (
     <div className="flex flex-col md:flex-row lg:flex-row gap-[30px] lg:gap-[80px] p-5 md:p-[30px] bg-[#252530] border border-[#353542] rounded-xl">
-      {/*  w-[335px] md:w-[684px] */}
       <div className="w-full md:w-[160px]">
         <ReviewProfile user={user} rating={rating} />
       </div>
       <div className="flex-1">
         {isSponsored && (
-          <p className="text-sm font-normal bg-clip-text text-transparent bg-gradient-to-r from-[#5097FA] to-[#5363FF]">
+          <p className="flex text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#5097FA] to-[#5363FF]">
             지원받고 남기는 리뷰입니다.
           </p>
         )}
@@ -53,6 +55,8 @@ export default function Review({
                   src={image.source}
                   alt={`Review Image ${image.id}`}
                   style={{ objectFit: 'cover' }}
+                  sizes="200px auto"
+                  priority
                 />
               </div>
             ))}
@@ -63,16 +67,24 @@ export default function Review({
             <p className="text-gray-600 text-xs lg:text-sm font-normal">{formattedDate}</p>
             {isMyReview && (
               <div className="flex gap-[10px]">
-                <button className="text-gray-600 text-xs lg:text-sm font-light underline decoration-gray-600">
+                <Button
+                  variant="text"
+                  size="auto"
+                  className="text-gray-600 text-xs lg:text-sm font-light underline decoration-gray-600"
+                >
                   수정
-                </button>
-                <button className="text-gray-600 text-xs lg:text-sm font-light underline decoration-gray-600">
+                </Button>
+                <Button
+                  variant="text"
+                  size="auto"
+                  className="text-gray-600 text-xs lg:text-sm font-light underline decoration-gray-600"
+                >
                   삭제
-                </button>
+                </Button>
               </div>
             )}
           </div>
-          <Thumbs isLiked={isLiked} likeCount={likeCount} />
+          <Thumbs reviewId={id} isLiked={isLiked} likeCount={likeCount} />
         </div>
       </div>
     </div>
