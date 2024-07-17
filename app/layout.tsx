@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={cn(inter.className, 'bg-black-600')}>
+      <body className={cn(inter.className, 'bg-black-700')}>
         <QueryProviderWrapper>{children}</QueryProviderWrapper>
         <Toaster position="top-center" />
       </body>
