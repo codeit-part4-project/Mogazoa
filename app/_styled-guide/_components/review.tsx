@@ -3,10 +3,12 @@ import { ReviewResponse } from '@/types/data';
 import Image from 'next/image';
 import { ReviewProfile } from './review-profile';
 import Thumbs from './Thumbs';
+import React, { LegacyRef } from 'react';
 
 interface ReviewProps extends ReviewResponse {
   currentUserId: number | undefined;
   isSponsored: boolean;
+  reviewRef: LegacyRef<HTMLDivElement> | undefined;
 }
 
 export default function Review({
@@ -21,13 +23,17 @@ export default function Review({
   likeCount,
   currentUserId,
   isSponsored,
+  reviewRef,
 }: ReviewProps) {
   const isMyReview = userId === currentUserId;
   const date = new Date(createdAt);
   const formattedDate = date.toISOString().slice(0, 10);
 
   return (
-    <div className="flex flex-col md:flex-row lg:flex-row gap-[30px] lg:gap-[80px] p-5 md:p-[30px] bg-[#252530] border border-[#353542] rounded-xl">
+    <div
+      ref={reviewRef}
+      className="flex flex-col md:flex-row lg:flex-row gap-[30px] lg:gap-[80px] p-5 md:p-[30px] bg-[#252530] border border-[#353542] rounded-xl"
+    >
       <div className="w-full md:w-[160px]">
         <ReviewProfile user={user} rating={rating} />
       </div>
