@@ -1,6 +1,4 @@
 'use client';
-
-import { ReviewOrder } from '@/app/product/[productId]/components/review-list';
 import { reviewOrderOptions } from '@/constants/sort-order';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { IoMdArrowDropdown } from 'react-icons/io';
@@ -22,7 +20,8 @@ const SortSelector = ({ sort, setSort }: CategorySelectorProps) => {
   };
 
   const handleOrderSelect = (option: string) => {
-    setSort(option as ReviewOrder);
+    setSort(option);
+    setIsOpen(false);
   };
 
   return (
@@ -35,7 +34,7 @@ const SortSelector = ({ sort, setSort }: CategorySelectorProps) => {
           aria-haspopup="true"
           onClick={toggleDropdown}
         >
-          {reviewOrderOptions.find((value) => value.label === sort)?.label}
+          {sort}
           <IoMdArrowDropdown
             className={`ml-2 h-5 md:h-[22px] lg:h-6 mr-[-4px] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
           />

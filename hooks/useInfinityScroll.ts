@@ -1,9 +1,7 @@
-import { reviewOrderOptions } from '@/constants/sort-order';
 import { ReviewResponse } from '@/types/data';
 import instance from '@/utils/axiosInstance';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
 
@@ -16,9 +14,9 @@ interface useInfinityScrollProps {
   threshold?: ZeroToOne;
 }
 
-export const getFetchingUrl = (fetchingType: string, productId: string, sort: string) => {
+export const getFetchingUrl = (fetchingType: string, productId: string, sortOrder: string) => {
   if (fetchingType === 'review') {
-    return `/products/${productId}/reviews?order=${reviewOrderOptions.find((value) => value.label === sort)?.id}`;
+    return `/products/${productId}/reviews?order=${sortOrder}`;
   }
   return null;
 };
@@ -29,7 +27,6 @@ export const useInfinityScroll = ({
   sortOrder,
   threshold = 0.5,
 }: useInfinityScrollProps) => {
-  const [sort, setSort] = useState<string>(sortOrder);
   const { ref, inView } = useInView({
     threshold: threshold,
   });
@@ -38,10 +35,10 @@ export const useInfinityScroll = ({
     list: ReviewResponse[];
     nextCursor: number;
   }>({
-    queryKey: ['review', productId, sort],
+    queryKey: [fetchingType, productId, sortOrder],
     queryFn: async ({ pageParam = null }) => {
       try {
-        const url = getFetchingUrl(fetchingType, productId, sort);
+        const url = getFetchingUrl(fetchingType, productId, sortOrder);
         if (!url) return;
         const result = pageParam !== null ? `${url}&cursor=${pageParam}` : url;
         const res = await instance.get(result);
@@ -71,7 +68,5 @@ export const useInfinityScroll = ({
     data,
     isError,
     isPending,
-    sort,
-    setSort,
   };
 };
