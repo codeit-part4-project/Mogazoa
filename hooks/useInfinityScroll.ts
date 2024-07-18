@@ -2,8 +2,10 @@ import { reviewOrderOptions } from '@/constants/sort-order';
 import { ReviewResponse } from '@/types/data';
 import instance from '@/utils/axiosInstance';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { toast } from 'sonner';
 
 type ZeroToOne = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1;
 
@@ -11,7 +13,7 @@ interface useInfinityScrollProps {
   productId: string;
   fetchingType: string;
   sortOrder: string;
-  threshold: ZeroToOne;
+  threshold?: ZeroToOne;
 }
 
 export const getFetchingUrl = (fetchingType: string, productId: string, sort: string) => {
@@ -23,8 +25,8 @@ export const getFetchingUrl = (fetchingType: string, productId: string, sort: st
 
 export const useInfinityScroll = ({
   productId,
-  fetchingType = 'review',
-  sortOrder = '최신순',
+  fetchingType,
+  sortOrder,
   threshold = 0.5,
 }: useInfinityScrollProps) => {
   const [sort, setSort] = useState<string>(sortOrder);
@@ -44,10 +46,14 @@ export const useInfinityScroll = ({
         const result = pageParam !== null ? `${url}&cursor=${pageParam}` : url;
         const res = await instance.get(result);
         if (!res) return;
-        console.log(res);
         return res.data;
-      } catch (e) {
-        console.log(e);
+      } catch (err: any) {
+        let errorMessage = '데이터를 불러 오는데 실패 했습니다.';
+        if (err.response && err.response.data && err.response.data.message) {
+          errorMessage = err.response.data.message;
+        }
+        toast.error(errorMessage);
+        throw err;
       }
     },
     initialPageParam: 0,

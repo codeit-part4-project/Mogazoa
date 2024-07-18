@@ -46,7 +46,7 @@ const Thumbs = ({ reviewId, isLiked, likeCount }: ThumbsProps) => {
       variant="outline"
       size="auto"
       onClick={handleClick}
-      className="flex items-center px-[10px] rounded-full gap-[2px] py-[2px] md:py-0"
+      className="flex items-center px-[10px] rounded-full gap-[2px] py-[2px] lg:py-0"
     >
       {isNowLiked ? (
         <RiThumbUpFill className="text-blue mr-[5px] text-[13px] md:text-[15px]" />

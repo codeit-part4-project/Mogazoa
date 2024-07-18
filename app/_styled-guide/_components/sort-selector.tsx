@@ -7,12 +7,12 @@ import { IoMdArrowDropdown } from 'react-icons/io';
 import DropdownList from './DropdownList';
 
 interface CategorySelectorProps {
-  order: string;
-  setOrder: Dispatch<SetStateAction<string>>;
+  sort: string;
+  setSort: Dispatch<SetStateAction<string>>;
 }
 
 // sort 기능을 위한 드롭다운 메뉴 컴포넌트입니다.
-const SortSelector = ({ order, setOrder }: CategorySelectorProps) => {
+const SortSelector = ({ sort, setSort }: CategorySelectorProps) => {
   const options = reviewOrderOptions.map((opt) => opt.label);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -22,7 +22,7 @@ const SortSelector = ({ order, setOrder }: CategorySelectorProps) => {
   };
 
   const handleOrderSelect = (option: string) => {
-    setOrder(option as ReviewOrder);
+    setSort(option as ReviewOrder);
   };
 
   return (
@@ -35,7 +35,7 @@ const SortSelector = ({ order, setOrder }: CategorySelectorProps) => {
           aria-haspopup="true"
           onClick={toggleDropdown}
         >
-          {reviewOrderOptions.find((value) => value.label === order)?.label}
+          {reviewOrderOptions.find((value) => value.label === sort)?.label}
           <IoMdArrowDropdown
             className={`ml-2 h-5 md:h-[22px] lg:h-6 mr-[-4px] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
           />
