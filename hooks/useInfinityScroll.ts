@@ -8,13 +8,17 @@ import { toast } from 'sonner';
 type ZeroToOne = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1;
 
 interface useInfinityScrollProps {
-  productId: string;
+  productId: string | string[];
   fetchingType: string;
   sortOrder: string;
   threshold?: ZeroToOne;
 }
 
-export const getFetchingUrl = (fetchingType: string, productId: string, sortOrder: string) => {
+export const getFetchingUrl = (
+  fetchingType: string,
+  productId: string | string[],
+  sortOrder: string,
+) => {
   if (fetchingType === 'review') {
     return `/products/${productId}/reviews?order=${sortOrder}`;
   }

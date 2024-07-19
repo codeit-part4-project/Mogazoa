@@ -4,7 +4,7 @@ import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import { useGetMyInfo } from '@/hooks/user';
 
 interface ReivewListProps {
-  productId: string;
+  productId: string | string[];
   sortOrder: string;
 }
 
