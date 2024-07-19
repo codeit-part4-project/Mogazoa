@@ -1,4 +1,10 @@
-import { ReviewResponse } from '@/types/data';
+import {
+  FolloweesResponse,
+  FollowersResponse,
+  ProductsListResponse,
+  ReviewListResponse,
+  ReviewResponse,
+} from '@/types/data';
 import instance from '@/utils/axiosInstance';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
@@ -9,26 +15,35 @@ type ZeroToOne = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1;
 
 interface useInfinityScrollProps {
   productId: string | string[];
-  queryKey: string;
+  queryKey: 'review' | 'product' | 'followers' | 'followed';
   queryFnUrl: string;
   sortOrder: string;
   threshold?: ZeroToOne;
 }
+
+type queryResponse =
+  | ReviewListResponse
+  | ProductsListResponse
+  | FollowersResponse
+  | FolloweesResponse;
 
 export const useInfinityScroll = ({
   productId,
   queryKey,
   queryFnUrl,
   sortOrder,
-  threshold = 0.5,
+  threshold = 0.3,
 }: useInfinityScrollProps) => {
   const { ref, inView } = useInView({
     threshold: threshold,
   });
-  const { data, isPending, isError, fetchNextPage } = useInfiniteQuery<{
-    list: ReviewResponse[];
-    nextCursor: number;
-  }>({
+  const {
+    data: getData,
+    isPending,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery<queryResponse>({
     queryKey: [queryKey, productId, sortOrder],
     queryFn: async ({ pageParam = null }) => {
       try {
@@ -48,16 +63,20 @@ export const useInfinityScroll = ({
     getNextPageParam: (lastPage) => lastPage?.nextCursor,
   });
 
+  const data = getData?.pages.flatMap((value) => value.list.map((list) => list));
+
   useEffect(() => {
     if (inView) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage, sortOrder]);
+  }, [inView, fetchNextPage]);
 
   return {
     ref,
     data,
     isError,
     isPending,
+    fetchNextPage,
+    hasNextPage,
   };
 };
