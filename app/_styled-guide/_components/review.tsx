@@ -7,7 +7,6 @@ import React, { LegacyRef } from 'react';
 
 interface ReviewProps extends ReviewResponse {
   currentUserId: number | undefined;
-  isSponsored: boolean;
   reviewRef: LegacyRef<HTMLDivElement> | undefined;
 }
 
@@ -22,7 +21,6 @@ export default function Review({
   isLiked,
   likeCount,
   currentUserId,
-  isSponsored,
   reviewRef,
 }: ReviewProps) {
   const isMyReview = userId === currentUserId;
@@ -38,11 +36,6 @@ export default function Review({
         <ReviewProfile user={user} rating={rating} />
       </div>
       <div className="flex-1">
-        {isSponsored && (
-          <p className="flex text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#5097FA] to-[#5363FF]">
-            지원받고 남기는 리뷰입니다.
-          </p>
-        )}
         <p
           className="text-[#F1F1F5] text-sm md:text-base font-normal whitespace-pre mt-[10px]"
           style={{ wordBreak: 'keep-all' }}

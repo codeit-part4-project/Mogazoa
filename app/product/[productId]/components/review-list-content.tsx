@@ -32,13 +32,7 @@ export default function ReviewListContent({ productId, sortOrder }: ReivewListPr
       {getReviewList &&
         getReviewList.pages.flatMap((page) =>
           page?.list?.map((review) => (
-            <Review
-              key={review.id}
-              {...review}
-              currentUserId={currentUserId?.id}
-              isSponsored={true}
-              reviewRef={ref}
-            />
+            <Review key={review.id} {...review} currentUserId={currentUserId?.id} reviewRef={ref} />
           )),
         )}
     </>
