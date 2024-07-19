@@ -9,43 +9,30 @@ type ZeroToOne = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1;
 
 interface useInfinityScrollProps {
   productId: string | string[];
-  fetchingType: string;
+  queryKey: string;
+  queryFnUrl: string;
   sortOrder: string;
   threshold?: ZeroToOne;
 }
 
-export const getFetchingUrl = (
-  fetchingType: string,
-  productId: string | string[],
-  sortOrder: string,
-) => {
-  if (fetchingType === 'review') {
-    return `/products/${productId}/reviews?order=${sortOrder}`;
-  }
-  return null;
-};
-
 export const useInfinityScroll = ({
   productId,
-  fetchingType,
+  queryKey,
+  queryFnUrl,
   sortOrder,
   threshold = 0.5,
 }: useInfinityScrollProps) => {
   const { ref, inView } = useInView({
     threshold: threshold,
   });
-
   const { data, isPending, isError, fetchNextPage } = useInfiniteQuery<{
     list: ReviewResponse[];
     nextCursor: number;
   }>({
-    queryKey: [fetchingType, productId, sortOrder],
+    queryKey: [queryKey, productId, sortOrder],
     queryFn: async ({ pageParam = null }) => {
       try {
-        const url = getFetchingUrl(fetchingType, productId, sortOrder);
-        if (!url) return;
-        const result = pageParam !== null ? `${url}&cursor=${pageParam}` : url;
-        const res = await instance.get(result);
+        const res = await instance.get(`${queryFnUrl}?order=${sortOrder}&cursor=${pageParam}`);
         if (!res) return;
         return res.data;
       } catch (err: any) {
@@ -65,7 +52,7 @@ export const useInfinityScroll = ({
     if (inView) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage]);
+  }, [inView, fetchNextPage, sortOrder]);
 
   return {
     ref,

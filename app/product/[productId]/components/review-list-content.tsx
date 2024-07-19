@@ -2,13 +2,10 @@
 import Review from '@/app/_styled-guide/_components/review';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import { useGetMyInfo } from '@/hooks/user';
+import { useReviewSortStore } from '@/store/sortOrderStore';
 
-interface ReivewListProps {
-  productId: string | string[];
-  sortOrder: string;
-}
-
-export default function ReviewListContent({ productId, sortOrder }: ReivewListProps) {
+export default function ReviewListContent({ productId }: { productId: string | string[] }) {
+  const { sortOrder } = useReviewSortStore();
   const {
     ref,
     data: getReviewList,
@@ -16,8 +13,9 @@ export default function ReviewListContent({ productId, sortOrder }: ReivewListPr
     isError,
   } = useInfinityScroll({
     productId: productId,
-    fetchingType: 'review',
-    sortOrder: sortOrder ? sortOrder : 'recent',
+    queryKey: 'review',
+    queryFnUrl: `/products/${productId}/reviews`,
+    sortOrder: sortOrder,
     threshold: 0.5,
   });
 
