@@ -1,11 +1,11 @@
+import { ReviewProfile } from '@/app/_styled-guide/_components/review-profile';
 import { Button } from '@/components/ui/button';
 import { useDeleteReview } from '@/hooks/review';
 import { ReviewResponse } from '@/types/data';
 import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import { LegacyRef } from 'react';
-import { ReviewProfile } from './review-profile';
-import Thumbs from './Thumbs';
+import Thumbs from './thumbs';
 
 interface ReviewProps extends ReviewResponse {
   currentUserId: number | undefined;

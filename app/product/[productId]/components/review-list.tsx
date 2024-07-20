@@ -1,11 +1,11 @@
 'use client';
-import Review from '@/app/_styled-guide/_components/review';
 import SortSelector from '@/app/_styled-guide/_components/sort-selector';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import { useGetMyInfo } from '@/hooks/user';
 import { useReviewSortStore } from '@/store/sortOrderStore';
 import { ReviewResponse } from '@/types/data';
 import { useDeferredValue, useEffect, useState } from 'react';
+import Review from './review';
 
 export default function ReviewList({ productId }: { productId: string | string[] }) {
   const { sortOrder, setSortOrder } = useReviewSortStore();
