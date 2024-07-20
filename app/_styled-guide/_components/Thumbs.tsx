@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button';
 import { useLikeReview, useUnlikeReview } from '@/hooks/review';
 import { cn } from '@/lib/utils';
-import { useLikedStore } from '@/store/reivewLikeStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { RiThumbUpFill, RiThumbUpLine } from 'react-icons/ri';
 
@@ -14,7 +13,6 @@ interface ThumbsProps {
 
 const Thumbs = ({ reviewId, isLiked, likeCount }: ThumbsProps) => {
   const queryClient = useQueryClient();
-  const { setIsNowLiked, setNowLikedCount } = useLikedStore();
 
   const invalidateReviewQueries = () => {
     queryClient.invalidateQueries({ queryKey: ['review'] });
@@ -22,9 +20,6 @@ const Thumbs = ({ reviewId, isLiked, likeCount }: ThumbsProps) => {
 
   const likeReview = useLikeReview(reviewId, {
     onSuccess: () => {
-      const result = Number(likeCount) + 1;
-      setIsNowLiked(true);
-      setNowLikedCount(result);
       invalidateReviewQueries();
     },
     onError: (error) => {
@@ -34,9 +29,6 @@ const Thumbs = ({ reviewId, isLiked, likeCount }: ThumbsProps) => {
 
   const unlikeReview = useUnlikeReview(reviewId, {
     onSuccess: () => {
-      const result = Number(likeCount) + 1;
-      setIsNowLiked(true);
-      setNowLikedCount(result);
       invalidateReviewQueries();
     },
     onError: (error) => {

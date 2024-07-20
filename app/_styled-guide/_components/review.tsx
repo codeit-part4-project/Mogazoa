@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/button';
+import { useDeleteReview } from '@/hooks/review';
 import { ReviewResponse } from '@/types/data';
+import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
+import { LegacyRef } from 'react';
 import { ReviewProfile } from './review-profile';
 import Thumbs from './Thumbs';
-import React, { LegacyRef } from 'react';
 
 interface ReviewProps extends ReviewResponse {
   currentUserId: number | undefined;
@@ -26,7 +28,13 @@ export default function Review({
   const isMyReview = userId === currentUserId;
   const date = new Date(createdAt);
   const formattedDate = date.toISOString().slice(0, 10);
+  const queryClient = useQueryClient();
 
+  const deleteReview = useDeleteReview(id);
+  const handleDelete = () => {
+    deleteReview.mutate();
+    queryClient.invalidateQueries({ queryKey: ['review'] });
+  };
   return (
     <div
       ref={reviewRef}
@@ -77,6 +85,7 @@ export default function Review({
                   variant="text"
                   size="auto"
                   className="text-gray-600 text-xs lg:text-sm font-light underline decoration-gray-600"
+                  onClick={handleDelete}
                 >
                   삭제
                 </Button>

@@ -3,7 +3,6 @@ import Review from '@/app/_styled-guide/_components/review';
 import SortSelector from '@/app/_styled-guide/_components/sort-selector';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import { useGetMyInfo } from '@/hooks/user';
-import { useLikedStore } from '@/store/reivewLikeStore';
 import { useReviewSortStore } from '@/store/sortOrderStore';
 import { ReviewResponse } from '@/types/data';
 import { useDeferredValue, useEffect, useState } from 'react';
@@ -23,7 +22,6 @@ export default function ReviewList({ productId }: { productId: string | string[]
 
 export function ReviewListContent({ productId }: { productId: string | string[] }) {
   const { sortOrder } = useReviewSortStore();
-  const { isNowLiked, nowLikedCount } = useLikedStore();
   const [displayReviews, setDisplayReviews] = useState<ReviewResponse[]>();
 
   const {
@@ -43,13 +41,14 @@ export function ReviewListContent({ productId }: { productId: string | string[] 
   const { data: currentUserId } = useGetMyInfo();
 
   const deferredValue = useDeferredValue(displayReviews);
-  // isPending 값 및 정렬 변경 감지
+
+  // useDeferredValue 이전 값
   useEffect(() => {
     if (!isPending || hasNextPage) {
-      const result = getReviewList as ReviewResponse[];
+      const result = getReviewList;
       setDisplayReviews(result);
     }
-  }, [isPending, fetchNextPage, hasNextPage, sortOrder, isNowLiked, nowLikedCount]);
+  }, [isPending, fetchNextPage]);
 
   if (isPending)
     return (
@@ -61,6 +60,7 @@ export function ReviewListContent({ productId }: { productId: string | string[] 
           ))}
       </div>
     );
+
   if (isError) return <div>ERROR</div>;
 
   return (
