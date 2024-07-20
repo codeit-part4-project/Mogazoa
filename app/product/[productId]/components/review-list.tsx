@@ -3,9 +3,10 @@ import Review from '@/app/_styled-guide/_components/review';
 import SortSelector from '@/app/_styled-guide/_components/sort-selector';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import { useGetMyInfo } from '@/hooks/user';
+import { useLikedStore } from '@/store/reivewLikeStore';
 import { useReviewSortStore } from '@/store/sortOrderStore';
 import { ReviewResponse } from '@/types/data';
-import { useEffect, useState } from 'react';
+import { useDeferredValue, useEffect, useState } from 'react';
 
 export default function ReviewList({ productId }: { productId: string | string[] }) {
   const { sortOrder, setSortOrder } = useReviewSortStore();
@@ -22,7 +23,9 @@ export default function ReviewList({ productId }: { productId: string | string[]
 
 export function ReviewListContent({ productId }: { productId: string | string[] }) {
   const { sortOrder } = useReviewSortStore();
+  const { isNowLiked, nowLikedCount } = useLikedStore();
   const [displayReviews, setDisplayReviews] = useState<ReviewResponse[]>();
+
   const {
     ref,
     data: getReviewList,
@@ -39,26 +42,32 @@ export function ReviewListContent({ productId }: { productId: string | string[] 
 
   const { data: currentUserId } = useGetMyInfo();
 
+  const deferredValue = useDeferredValue(displayReviews);
   // isPending 값 및 정렬 변경 감지
   useEffect(() => {
     if (!isPending || hasNextPage) {
       const result = getReviewList as ReviewResponse[];
       setDisplayReviews(result);
     }
-  }, [isPending, fetchNextPage, hasNextPage, sortOrder]);
+  }, [isPending, fetchNextPage, hasNextPage, sortOrder, isNowLiked, nowLikedCount]);
 
+  if (isPending)
+    return (
+      <div className="relative flex flex-col gap-5 mt-[30px]">
+        <div className="absolute left-0 top-0 right-0 bottom-0 bg-black-700 opacity-50 z-[1]"></div>
+        {deferredValue &&
+          deferredValue.map((review) => (
+            <Review key={review.id} {...review} currentUserId={currentUserId?.id} reviewRef={ref} />
+          ))}
+      </div>
+    );
   if (isError) return <div>ERROR</div>;
 
   return (
     <>
-      <div
-        className="flex flex-col gap-5 mt-[30px]"
-        style={{
-          opacity: isPending ? 0.5 : 1,
-        }}
-      >
-        {displayReviews &&
-          displayReviews.map((review) => (
+      <div className="flex flex-col gap-5 mt-[30px]">
+        {getReviewList &&
+          getReviewList.map((review) => (
             <Review key={review.id} {...review} currentUserId={currentUserId?.id} reviewRef={ref} />
           ))}
       </div>

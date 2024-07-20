@@ -52,19 +52,20 @@ export interface RankedUserResponse {
   followersCount: number;
 }
 
+export interface ProductResponse {
+  writerId: number;
+  categoryId: number;
+  favoriteCount: number;
+  reviewCount: number;
+  rating: number;
+  image?: string;
+  name: string;
+  id: number;
+}
 //유저가 생성한 상품 목록, 유저가 리뷰한 상품 목록, 유저가 찜한 상품 목록, 상품 조회 응답
 export interface ProductsListResponse {
   nextCursor: number | null;
-  list: {
-    writerId: number;
-    categoryId: number;
-    favoriteCount: number;
-    reviewCount: number;
-    rating: number;
-    image?: string;
-    name: string;
-    id: number;
-  }[];
+  list: ProductResponse[];
 }
 
 //유저가 팔로우한 유저 조회 응답
@@ -345,4 +346,30 @@ export interface Params extends Order {
   keyword?: string;
   category?: number;
   cursor?: number;
+}
+
+export interface FollowerResponse {
+  id: number;
+  followee: {
+    updatedAt: string;
+    createdAt: string;
+    teamId: string;
+    image?: string;
+    description?: string;
+    nickname: string;
+    id: number;
+  };
+}
+
+export interface FollowingResponse {
+  id: number;
+  followee: {
+    updatedAt: string;
+    createdAt: string;
+    teamId: string;
+    image?: string;
+    description?: string;
+    nickname: string;
+    id: number;
+  };
 }

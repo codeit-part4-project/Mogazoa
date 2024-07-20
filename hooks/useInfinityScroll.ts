@@ -1,6 +1,9 @@
 import {
   FolloweesResponse,
+  FollowerResponse,
   FollowersResponse,
+  FollowingResponse,
+  ProductResponse,
   ProductsListResponse,
   ReviewListResponse,
   ReviewResponse,
@@ -13,6 +16,13 @@ import { toast } from 'sonner';
 
 type ZeroToOne = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1;
 
+type queryResponse = ReviewResponse & ProductResponse & FollowerResponse & FollowingResponse;
+
+type queryListResponse = ReviewListResponse &
+  ProductsListResponse &
+  FollowersResponse &
+  FolloweesResponse;
+
 interface useInfinityScrollProps {
   productId: string | string[];
   queryKey: 'review' | 'product' | 'followers' | 'followed';
@@ -20,12 +30,6 @@ interface useInfinityScrollProps {
   sortOrder: string;
   threshold?: ZeroToOne;
 }
-
-type queryResponse =
-  | ReviewListResponse
-  | ProductsListResponse
-  | FollowersResponse
-  | FolloweesResponse;
 
 export const useInfinityScroll = ({
   productId,
@@ -43,8 +47,8 @@ export const useInfinityScroll = ({
     isError,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery<queryResponse>({
-    queryKey: [queryKey, productId, sortOrder],
+  } = useInfiniteQuery<queryListResponse>({
+    queryKey: [queryKey, { productId, sortOrder }],
     queryFn: async ({ pageParam = null }) => {
       try {
         const res = await instance.get(`${queryFnUrl}?order=${sortOrder}&cursor=${pageParam}`);
@@ -63,7 +67,7 @@ export const useInfinityScroll = ({
     getNextPageParam: (lastPage) => lastPage?.nextCursor,
   });
 
-  const data = getData?.pages.flatMap((value) => value.list.map((list) => list));
+  const data = getData?.pages.flatMap((value) => value.list.map((list) => list as queryResponse));
 
   useEffect(() => {
     if (inView) {
