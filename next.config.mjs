@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 
-import sharp from 'sharp';
-
 const nextConfig = {
   async rewrites() {
     return [
