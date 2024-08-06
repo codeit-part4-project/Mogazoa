@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+
+import sharp from 'sharp';
+
 const nextConfig = {
   async rewrites() {
     return [
@@ -42,9 +45,6 @@ const nextConfig = {
 
       // Further optimizations
       config.optimization.runtimeChunk = 'single';
-
-      // Use 'sharp' for image optimization if available
-      config.resolve.alias['sharp'] = require.resolve('sharp');
     }
 
     return config;
